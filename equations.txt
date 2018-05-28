@@ -1,0 +1,2 @@
+Equação da Cruva de Bezier grau 4:
+B(t) = (1 - t)^4*B0 + 4t(1 - t)^3*B1 + 4t^2(1 - t)*B2 + 4t^3(1 - t)*B3 + t^4*B4, 0 < t < 1 
