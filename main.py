@@ -13,6 +13,8 @@ def main():
 	pygame.display.flip()
 
 	clicked_points = []
+	c0_points = []
+	c1_points = []
 	curves = []
  
 	while running:
@@ -31,9 +33,16 @@ def main():
 				print ("draw bezier")
 				curve = draw_bezier(screen, clicked_points)
 				curves.append(curve)
+				c0_points = clicked_points[:]
 				clicked_points = []
-				print ("len(curves): ", len(curves))
-		
+			elif chr(event.key) == "s" and len(clicked_points) == 5:
+				print ("draw b-spline (bezier 2)")
+				curve = draw_bezier(screen, clicked_points)
+				curves.append(curve)
+				c1_points = clicked_points[:]
+				clicked_points = []
+			elif chr(event.key) == "0" and len(curves) == 2:
+				do_c0(screen, c0_points, c1_points, curves)
 		pygame.display.flip()
 
 def draw_polygon(screen, clicked_points):
@@ -54,6 +63,21 @@ def draw_bezier(screen, clicked_points):
 
 	return c1
 
+def draw_b_spline(screen, clicked_points):
+	precision = 0.001
+	t = 0.0
+
+	c1 = []
+
+	while (t < 1):
+		point = b_spline_function(t, clicked_points)
+		c1.append(point)
+		pygame.draw.circle(screen, POINT_COLOR, point, 2)
+		t += precision
+		pygame.display.flip()
+
+	return c1
+
 def bezier_function(t, clicked_points):
 	B0 = clicked_points[0]
 	B1 = clicked_points[1]
@@ -61,18 +85,54 @@ def bezier_function(t, clicked_points):
 	B3 = clicked_points[3]
 	B4 = clicked_points[4]
 
-	print (B0)
-	print (B1)
-	print (B2)
-	print (B3)
-	print (B4)
-
 	x = (1 - t)**4*B0[0] + 4*t*(1 - t)**3*B1[0] + 6*t**2*(1 - t)**2*B2[0] + 4*t**3*(1 - t)*B3[0] + t**4*B4[0]
-	print ("x: ", x)
 
 	y = (1 - t)**4*B0[1] + 4*t*(1 - t)**3*B1[1] + 6*t**2*(1 - t)**2*B2[1] + 4*t**3*(1 - t)*B3[1] + t**4*B4[1]
-	print ("y: ", y)
 
 	return int(x), int(y)
+
+def b_spline_function(t, clicked_points):
+	B0 = clicked_points[0]
+	B1 = clicked_points[1]
+	B2 = clicked_points[2]
+	B3 = clicked_points[3]
+
+	if (t == 0):
+		x = (-1*(1)**3 + 3*(1)**2 - 3*(1) + 1)/6*B0[0] + (-1*3*(1)**3 + 3*(1)**2 + 3*(1) + 1)/6*B2[0] + (1)**3/6*B3[0] + 0
+		y = (-1*(1)**3 + 3*(1)**2 - 3*(1) + 1)/6*B0[1] + (-1*3*(1)**3 + 3*(1)**2 + 3*(1) + 1)/6*B2[1] + (1)**3/6*B3[1] + 0
+	elif (t == 1):
+		x = 0 + (3*t**3 - 6*t**2 + 4)/6*B1[0] + (-1*3*t**3 + 3*t**2 + 3*t + 1)/6*B2[0] + t**3/6*B3[0]
+		y = 0 + (3*t**3 - 6*t**2 + 4)/6*B1[1] + (-1*3*t**3 + 3*t**2 + 3*t + 1)/6*B2[1] + t**3/6*B3[1]
+	else:
+		x = (-1*t**3 + 3*t**2 - 3*t + 1)/6*B0[0] + (3*t**3 - 6*t**2 + 4)/6*B1[0] + (-1*3*t**3 + 3*t**2 + 3*t + 1)/6*B2[0] + t**3/6*B3[0]
+
+
+		y = (-1*t**3 + 3*t**2 - 3*t + 1)/6*B0[0] + (3*t**3 - 6*t**2 + 4)/6*B1[1] + (-1*3*t**3 + 3*t**2 + 3*t + 1)/6*B2[1] + t**3/6*B3[1]
+
+	return int(x), int(y)
+
+def do_c0(screen, c0_points, c1_points, curves):
+	c0 = curves[0]
+	c1 = curves[1]
+	p0, p1 = c0[0], c1[0]
+
+	print ('c0_points: ', c0_points)
+	print ('c1_points: ', c1_points)
+
+	b = c1_points[0]
+	a = c0_points[-1]
+
+	x_diff = b[0] - a[0]
+	y_diff = b[1] - a[1]
+
+	new_points = []
+
+	for x, y in c1_points:
+		x -= x_diff
+		y -= y_diff
+
+		new_points.append((x, y))
+
+	draw_bezier(screen, new_points)
 
 main()

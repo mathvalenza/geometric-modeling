@@ -1,2 +1,11 @@
+Diferenças entre Bezier e B-spline:
+Na Bezier, uma modificação de um ponto de controle implica na alteração global da curva. Na b-spline, esta alteração é local
+
 Equação da Cruva de Bezier grau 4:
-B(t) = (1 - t)^4*B0 + 4t(1 - t)^3*B1 + 4t^2(1 - t)*B2 + 4t^3(1 - t)*B3 + t^4*B4, 0 < t < 1 
+B(t) = (1 - t)^4*B0 + 4*t*(1 - t)^3*B1 + 6*t^2*(1 - t)^2*B2 + 4*t^3*(1 - t)*B3 + t^4*B4, 0 < t < 1
+
+fontes: 
+
+http://www.mat.ufmg.br/~rodney/notas_de_aula/bsplines.pdf
+
+http://www2.cs.uregina.ca/~anima/408/Notes/Interpolation/UniformBSpline.htm
