@@ -9,3 +9,5 @@ fontes:
 http://www.mat.ufmg.br/~rodney/notas_de_aula/bsplines.pdf
 
 http://www2.cs.uregina.ca/~anima/408/Notes/Interpolation/UniformBSpline.htm
+
+http://wiki.icmc.usp.br/images/1/14/CurvasSuperficiesLivres.pdf
